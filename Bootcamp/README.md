@@ -1,5 +1,4 @@
 # Framework for bootcamp
-#### consits of three main files:
 
 ## main.py
   * contains model and
@@ -13,3 +12,6 @@
 
 ## surrogateFunction.py
   * returns maximum value of ei based on surrogate function
+
+## plotProcess.py
+  * visualises algorithims hyperparameter optimisation process

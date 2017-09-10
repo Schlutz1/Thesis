@@ -1,21 +1,24 @@
 #main file framework
 
+#from matplotlib import pyplot as plt
 from neupy import algorithms, layers
 import random
 
+# these imports are used as the parameter optimisation
 from surrogateFunction import *
 from gaussianProcess import *
+from plotProcess import plot_process
 
+# function used to load standardised data sets
 from loadData import load_data
 
 
-
-def train_network(n_hidden, x_train, x_test, y_train, y_test):
+def train_network(n_hidden, x_train, x_test, y_train, y_test, n_classes, n_dimensionality):
     network = algorithms.Momentum(
         [
-            layers.Input(64),
-            layers.Relu(n_hidden),
-            layers.Softmax(10),
+            layers.Input(n_dimensionality), #input dimensionality
+            layers.Relu(n_hidden), #optimised hyperparam
+            layers.Softmax(n_classes), #class output
         ],
 
         # Randomly shuffle dataset before each
@@ -68,6 +71,7 @@ def hyperparam_selection(func, n_hidden_range, func_args=None, n_iter=20):
         n_hidden = next_parameter_by_ei(y_min, y_mean, y_std,
                                         n_hidden_choices)
 
+
         if y_min == 0 or n_hidden in parameters:
             # Lowest expected improvement value have been achieved
             break
@@ -76,10 +80,11 @@ def hyperparam_selection(func, n_hidden_range, func_args=None, n_iter=20):
     return parameters[min_score_index]
 
 if __name__ == '__main__':
-  x_train, x_test, y_train, y_test = load_data()
+  x_train, x_test, y_train, y_test, n_classes, n_dimensionality = load_data()
   best_n_hidden = hyperparam_selection(
     train_network,
     n_hidden_range=[50, 1000],
-    func_args=[x_train, x_test, y_train, y_test],
+    func_args=[x_train, x_test, y_train, y_test, n_classes, n_dimensionality],
     n_iter=6,
   )
+  print best_n_hidden
