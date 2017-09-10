@@ -11,7 +11,7 @@ def gaussian_process(x_train, y_train, x_test):
     x_test = vector_2d(x_test)
 
     # Train gaussian process
-    kernel = C(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2))
+    kernel = C(1.0, (1e-3, 1e3)) * RBF(10, (1e-2, 1e2)) #adjust kernel for better results?
     gp = GaussianProcessRegressor(kernel=kernel)
     gp.fit(x_train, y_train)
 
