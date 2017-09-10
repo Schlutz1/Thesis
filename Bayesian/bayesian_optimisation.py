@@ -11,6 +11,8 @@ from neupy import environment
 import numpy as np
 import random
 
+#establishes envv and splits data
+
 environment.reproducible()
 
 dataset = datasets.load_digits()
@@ -24,6 +26,8 @@ target[np.arange(n_samples), dataset.target] = 1
 x_train, x_test, y_train, y_test = train_test_split(
 		dataset.data, target, train_size=0.7
 )
+
+#trains net
 
 def train_network(n_hidden, x_train, x_test, y_train, y_test):
 		network = algorithms.Momentum(
@@ -50,8 +54,12 @@ def train_network(n_hidden, x_train, x_test, y_train, y_test):
 		# predicted value for x_test and y_test value
 		return network.prediction_error(x_test, y_test)
 
+#segments data
+
 def vector_2d(array):
 		return np.array(array).reshape((-1, 1))
+
+#implements gaussian processs
 
 def gaussian_process(x_train, y_train, x_test):
 
@@ -71,6 +79,8 @@ def gaussian_process(x_train, y_train, x_test):
 
 		return y_mean, y_std
 
+#implements surrogate function
+
 def next_parameter_by_ei(y_min, y_mean, y_std, x_choices):
 		# Calculate expecte improvement from 95% confidence interval
 		expected_improvement = y_min - (y_mean - 1.96 * y_std)
@@ -81,6 +91,8 @@ def next_parameter_by_ei(y_min, y_mean, y_std, x_choices):
 		next_parameter = x_choices[max_index]
 
 		return next_parameter
+
+#main method that calls processes
 
 def hyperparam_selection(func, n_hidden_range, func_args=None, n_iter=20):
     if func_args is None:
@@ -123,6 +135,8 @@ def hyperparam_selection(func, n_hidden_range, func_args=None, n_iter=20):
 
     min_score_index = np.argmin(scores)
     return parameters[min_score_index]
+
+#parses parameters
 
 best_n_hidden = hyperparam_selection(
     train_network,
