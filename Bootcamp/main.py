@@ -1,0 +1,85 @@
+#main file framework
+
+from neupy import algorithms, layers
+import random
+
+from surrogateFunction import *
+from gaussianProcess import *
+
+from loadData import load_data
+
+
+
+def train_network(n_hidden, x_train, x_test, y_train, y_test):
+    network = algorithms.Momentum(
+        [
+            layers.Input(64),
+            layers.Relu(n_hidden),
+            layers.Softmax(10),
+        ],
+
+        # Randomly shuffle dataset before each
+        # training epoch.
+        shuffle_data=True,
+
+        # Do not show training progress in output
+        verbose=False,
+
+        step=0.001,
+        batch_size=128,
+        error='categorical_crossentropy',
+    )
+    network.train(x_train, y_train, epochs=100)
+
+    # Calculates categorical cross-entropy error between
+    # predicted value for x_test and y_test value
+    return network.prediction_error(x_test, y_test)
+
+def hyperparam_selection(func, n_hidden_range, func_args=None, n_iter=20):
+    if func_args is None:
+        func_args = []
+
+    scores = []
+    parameters = []
+
+    min_n_hidden, max_n_hidden = n_hidden_range
+    n_hidden_choices = np.arange(min_n_hidden, max_n_hidden + 1)
+
+    # To be able to perform gaussian process we need to
+    # have at least 2 samples.
+    n_hidden = random.randint(min_n_hidden, max_n_hidden)
+    score = func(n_hidden, *func_args)
+
+    parameters.append(n_hidden)
+    scores.append(score)
+
+    n_hidden = random.randint(min_n_hidden, max_n_hidden)
+
+    for iteration in range(2, n_iter + 1):
+        score = func(n_hidden, *func_args)
+
+        parameters.append(n_hidden)
+        scores.append(score)
+
+        y_min = min(scores)
+        y_mean, y_std = gaussian_process(parameters, scores,
+                                         n_hidden_choices)
+
+        n_hidden = next_parameter_by_ei(y_min, y_mean, y_std,
+                                        n_hidden_choices)
+
+        if y_min == 0 or n_hidden in parameters:
+            # Lowest expected improvement value have been achieved
+            break
+
+    min_score_index = np.argmin(scores)
+    return parameters[min_score_index]
+
+if __name__ == '__main__':
+  x_train, x_test, y_train, y_test = load_data()
+  best_n_hidden = hyperparam_selection(
+    train_network,
+    n_hidden_range=[50, 1000],
+    func_args=[x_train, x_test, y_train, y_test],
+    n_iter=6,
+  )
