@@ -3,7 +3,6 @@
 from neupy import algorithms, layers
 import tensorflow as tf
 import numpy as np
-import itertools
 import random
 import math
 import gym
@@ -84,7 +83,7 @@ def bandit_function(total_episodes, learning_rate, e, bandits, noramlise_reward)
 			if i % 50 == 0:
 				print "Running reward for the " + str(num_bandits) + " bandits: " + str(total_reward)
 			i += 1
-	print "The agent thinks bandit " + str(np.argmax(ww)+1) + " is the most promising...."
+	#print "The agent thinks bandit " + str(np.argmax(ww)+1) + " is the most promising...."
 	
 	reward_value = [a*b for a,b in zip(total_reward, noramlise_reward)]
 	return (sum(reward_value))
@@ -96,10 +95,13 @@ if __name__ == '__main__':
 	bandits = [0.5, 0, -0.3, -0.6]
 	noramlise_reward = np.absolute(bandits)
 	# hyperparameter defintions
-	total_episodes = 1000  # Set total number of episodes to train agent on.
-	learning_rate_range = [0.0001, 1]  # Learning rate of model
+	total_episodes = 10  # Set total number of episodes to train agent on.
+	learning_rate_range = [0.0001, 10]  # Learning rate of model
 	e = 0.2  # Set the chance of taking a random action.
 	n_iter = 10
+
+	scores = []
+	parameters = []
 
 	min_learning_rate, max_learning_rate = learning_rate_range
 	learning_rate_choices = np.arange(min_learning_rate, max_learning_rate + 1)
@@ -108,15 +110,13 @@ if __name__ == '__main__':
 	min_learning_rate, max_learning_rate = min_learning_rate / \
 		normalisation_factor, max_learning_rate / normalisation_factor
 
-	meta_trials = 100
+	meta_trials = 1
 
 	trial_number = []
 	learning_rate_array = []
 	final_score = []
 
 	for i in range(meta_trials) :
-		scores = []
-		parameters = []
 
 		trial_number.append(i)
 
@@ -126,7 +126,6 @@ if __name__ == '__main__':
 				learning_rate = random.randint(
 					min_learning_rate, max_learning_rate)
 				learning_rate = learning_rate * normalisation_factor
-			print learning_rate
 
 			res = bandit_function(total_episodes, learning_rate, e, bandits, noramlise_reward)
 
@@ -134,9 +133,6 @@ if __name__ == '__main__':
 
 			scores.append(res)
 			parameters.append(learning_rate)
-
-			print scores
-			print parameters
 
 			if iteration < 2:
 				continue  # need two samples to actually minimise
@@ -158,10 +154,5 @@ if __name__ == '__main__':
 		
 		print parameters[max_score_index] # final learning rate
 
-	optimal_learning_rate = max(set(parameters), key=parameters.count)
-	print "Optimal learning rate : " + str(optimal_learning_rate)
-
 	writeFunction(trial_number, learning_rate_array, final_score)
-
-
 
