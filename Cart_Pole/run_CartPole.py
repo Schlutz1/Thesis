@@ -1,69 +1,120 @@
-"""
-Policy Gradient, Reinforcement Learning.
+# hyperpameter optimisation on cart pole framework
 
-The cart pole example
+from gaussianProcess import gaussian_process, vector_2d, range_handling
+from surrogateFunction import next_parameter_by_ei
+from writeFunction import write_function
+from rlBrain import policy_gradient
 
-View more on my tutorial page: https://morvanzhou.github.io/tutorials/
-
-Using:
-Tensorflow: 1.0
-gym: 0.8.0
-"""
-
-import gym
-from RL_brain import PolicyGradient
 import matplotlib.pyplot as plt
+import numpy as np
+import gym
+import random
+import math
+import sys
+import csv
 
-DISPLAY_REWARD_THRESHOLD = 400  # renders environment if total episode reward is greater then this threshold
+# renders environment if total episode reward is greater then this threshold
+DISPLAY_REWARD_THRESHOLD = 400
 RENDER = False  # rendering wastes time
 
 env = gym.make('CartPole-v0')
 env.seed(1)     # reproducible, general Policy gradient has high variance
 env = env.unwrapped
 
-print(env.action_space)
-print(env.observation_space)
-print(env.observation_space.high)
-print(env.observation_space.low)
+# iteration variables
 
-RL = PolicyGradient(
-    n_actions=env.action_space.n,
-    n_features=env.observation_space.shape[0],
-    learning_rate=0.02,
-    reward_decay=0.99,
-    # output_graph=True,
-)
+meta_trials = 10  # 3rd level iterable
+optimisation_range = 10  # 2nd level iterable
+reinforcement_learning_range = 100 # 1st level iterable
+trial_number, learning_rate_array, final_score = [], [], []
 
-for i_episode in range(3000):
+for meta_iteration in range(meta_trials):  # third level iteration
+	trial_number.append(meta_iteration)
 
-    observation = env.reset()
+	# hyperparameters
+	# optimal learning_rate = 0.02
+	learning_rate_range = [0.001, 0.1]
+	reward_decay = 0.99
+	scores, parameters = [], []
+	normalisation_factor, min_learning_rate, max_learning_rate, learning_rate_choices = range_handling(
+		learning_rate_range
+	)
 
-    while True:
-        if RENDER: env.render()
+	for opt_iteration in range(1, optimisation_range + 1):  # second level iteration
 
-        action = RL.choose_action(observation)
+		print("This is bayesian iteration: " + str(opt_iteration))
+		if opt_iteration in (1, 2):
+			learning_rate = random.randint(
+				min_learning_rate, max_learning_rate)
+			learning_rate = learning_rate * normalisation_factor
 
-        observation_, reward, done, info = env.step(action)
+		# define RL object
+		RL = policy_gradient(
+			n_actions=env.action_space.n,
+			n_features=env.observation_space.shape[0],
+			learning_rate=learning_rate,
+			reward_decay=0.99,
+			# output_graph=True,
+		)
 
-        RL.store_transition(observation, action, reward)
+		for i_episode in range(reinforcement_learning_range):  # first level iteration
 
-        if done:
-            ep_rs_sum = sum(RL.ep_rs)
+			observation = env.reset()
 
-            if 'running_reward' not in globals():
-                running_reward = ep_rs_sum
-            else:
-                running_reward = running_reward * 0.99 + ep_rs_sum * 0.01
-            if running_reward > DISPLAY_REWARD_THRESHOLD: RENDER = True     # rendering
-            print("episode:", i_episode, "  reward:", int(running_reward))
+			while True:
+				#if RENDER:
+				#env.render()	
 
-            vt = RL.learn()
+				action = RL.choose_action(observation)
+				observation_, reward, done, info = env.step(action)
+				RL.store_transition(observation, action, reward)
+				 
+				if done or sum(RL.ep_rs) > 600:
+					ep_rs_sum = sum(RL.ep_rs)
 
-            if i_episode == 0:
-                plt.plot(vt)    # plot the episode vt
-                plt.xlabel('episode steps')
-                plt.ylabel('normalized state-action value')
-                plt.show()
-            break
+					if 'running_reward' not in globals():
+						running_reward = ep_rs_sum
+					else:
+						running_reward = running_reward * 0.99 + ep_rs_sum * 0.01
+					if running_reward > DISPLAY_REWARD_THRESHOLD:
+						RENDER = True     # rendering
+					print("episode:", i_episode,
+						  "  reward:", int(running_reward))
 
-        observation = observation_
+					vt = RL.learn()
+
+					bayesian_cost_value = running_reward  # generate reward value for bayesian
+					break
+
+				observation = observation_
+
+		scores.append(bayesian_cost_value)
+		parameters.append(learning_rate)
+
+		print scores
+		print parameters
+
+		if opt_iteration < 2:
+			continue  # 2 samples needed for inference
+
+		y_mean, y_std = gaussian_process(
+			parameters, scores, learning_rate_choices)
+
+		y_min = min(scores)
+
+		learning_rate = next_parameter_by_ei(
+			y_min, y_mean, y_std, learning_rate_choices)
+
+		if y_min == 0 or learning_rate in parameters:
+			break  # lowest expectation achieved
+
+	max_score_index = np.argmax(scores)
+	final_score.append(scores[max_score_index])
+	learning_rate_array.append(parameters[max_score_index])
+
+	print parameters[max_score_index]  # final learning rate
+
+optimal_learning_rate = max(set(parameters), key=parameters.count)
+print "Optimal learning rate : " + str(optimal_learning_rate)
+
+write_function(trial_number, learning_rate_array, final_score)

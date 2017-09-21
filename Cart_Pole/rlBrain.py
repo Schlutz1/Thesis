@@ -19,7 +19,7 @@ np.random.seed(1)
 tf.set_random_seed(1)
 
 
-class PolicyGradient:
+class policy_gradient:
     def __init__(
             self,
             n_actions,
@@ -48,6 +48,7 @@ class PolicyGradient:
         self.sess.run(tf.global_variables_initializer())
 
     def _build_net(self):
+        tf.reset_default_graph()
         with tf.name_scope('inputs'):
             self.tf_obs = tf.placeholder(tf.float32, [None, self.n_features], name="observations")
             self.tf_acts = tf.placeholder(tf.int32, [None, ], name="actions_num")
