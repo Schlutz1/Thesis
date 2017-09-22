@@ -1,5 +1,6 @@
 import gym
 from RL_brain import PolicyGradient
+from writeFunction import write_function
 import matplotlib.pyplot as plt
 import optunity
 
@@ -25,7 +26,7 @@ def run_cartpole(learning_rate, reward_decay):
     for i_episode in range(30):
         observation = env.reset()
         while True:
-            # if RENDER: env.render()
+            #env.render()
             action = RL.choose_action(observation)
             observation_, reward, done, info = env.step(action)
             RL.store_transition(observation, action, reward)
@@ -59,3 +60,4 @@ print("Details:", details)
 # print(len(details))
 # # print(details[""])
 print("Suggestion:", suggestion)
+#write_function(trial_number, learning_rate, reward_decay, final_score)
