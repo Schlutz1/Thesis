@@ -9,18 +9,30 @@
 - Agenda_Melbourne_Bootcamp_Sept_2017_v0.6.pdf
 
 ### Supervised Learning
-This implements two supervised learning examples for classification and regression, involving full pipelining and bayesian optimisation.
+This implements several hyperparameter optimisation libraries on a variety of supervised learning problems, including classification and regression. Alogithims include Bayesian Optimisation (BO), and Tree-based Pipeline Optimisation (TPOT).
 ##### Supervised Learning/Bayesian_NN
-- main.py
+- main.py (main)
 - gaussianProcess.py
 - loadData.py
-###### Supervised Learning/TPOT
-- tpot.py
+##### Supervised Learning/TPOT
+- tpot.py (main)
 - tpot_iris_pipeline.py
 
 ### Unsupervised Learning
-- TBA
+This implements several hyperparameter optimisation libraries on a variety of reinforcement learning problems. Alogithims include Bayesian Optimisation (BO), Particle Swarm Optimisation (PSO), Tree-structured Parzen Estimators (TPE), and grid-search.
+##### RL_Bayesian_Bandit
+- Bandit.py (main)
+- gaussianProcess.py
+##### RL_Bayesian_CartPole
+- run_CartPole.py (main)
+- run_MountainCar.py
+- rlBrain.py
+- gaussianProcess.py
+- writeFunction.py
+##### RL_Optunity_CartPole
+- run_CartPole.py (main)
+- RL_brain.py
 
 ### Presentation Resources
-- TBA
+This directory contains materials that will be useful for the final presentation, including power point templates, graphics, logos, gifs, and icons.
 
