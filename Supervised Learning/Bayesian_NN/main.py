@@ -5,7 +5,6 @@ from neupy import algorithms, layers
 import random
 
 # these imports are used as the parameter optimisation
-from surrogateFunction import *
 from gaussianProcess import *
 #from plotProcess import plot_process
 
