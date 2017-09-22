@@ -49,7 +49,13 @@ def run_cartpole(learning_rate, reward_decay):
     print(Total_Rewards,"\n")
     return Total_Rewards
 
-
-# Total_Rewards = run_cartpole(learning_rate=0.02, reward_decay=0.99)
-# print(Total_Rewards)
-print(optunity.maximize(run_cartpole, num_evals=20, learning_rate=[0.001, 0.03], reward_decay=[0.01, 0.99], solver_name="particle swarm"))
+# By default, num_particles=10, num_generations=5
+solution, details, suggestion = optunity.maximize(run_cartpole, num_evals=20, solver_name="particle swarm", learning_rate=[0.001, 0.03], reward_decay=[0.01, 0.99])
+print("Solution:", solution)
+print("Details:", details)
+# print("Optimum:", details[0])
+# print("Iterations and Time:", details[1])
+# print("Call_Log:", details[2])
+# print(len(details))
+# # print(details[""])
+print("Suggestion:", suggestion)
