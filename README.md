@@ -36,3 +36,20 @@ This implements several hyperparameter optimisation libraries on a variety of re
 ### Presentation Resources
 This directory contains materials that will be useful for the final presentation, including power point templates, graphics, logos, gifs, and icons.
 
+-----
+
+## Dependancies:
+
+Infrastructure:
+* https://www.tensorflow.org/
+* http://scikit-learn.org/stable/
+* http://neupy.com/pages/home.html
+
+Optimisation:
+* http://optunity.readthedocs.io/
+* https://github.com/hyperopt/hyperopt
+* https://github.com/rhiever/tpot
+
+Reinforcement Learning:
+* https://github.com/openai/gym
+* https://gym.openai.com/docs/
