@@ -1,6 +1,6 @@
 import csv
 import optunity
-from sklearn.metrics import accuracy_score
+import sklearn.metrics
 from sklearn.svm import SVC
 import numpy as np
 
@@ -47,10 +47,10 @@ def score_model(x_train, y_train, x_test, y_test, **params):
     model_inst = model(**params)
     model_inst.fit(x_train, y_train)
     decision_vals = model_inst.predict(x_test)
-    score = accuracy_score(y_test, decision_vals)
-    print(score)
+    scoring = getattr(sklearn.metrics, scoring_method)
+    score = scoring(y_test, decision_vals)
     return score
 
 model = SVC
-scoring_method = "mse"
-print(optimize(False, 5, C=[5, 7], gamma=[0, 1]))
+scoring_method = "accuracy_score"
+optimize(False, 5, C=[5, 7], gamma=[0, 1])
