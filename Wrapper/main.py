@@ -42,14 +42,14 @@ class scoreModel:
         score = scoring(y_test, decision_vals)
         return score
 
-    def hyp_opt_optunity(self, data, labels, p, n_evals, **kwargs):
-        if p:
+    def hyp_opt_optunity(self, data, labels, p, num_folds, n_evals, **kwargs):
+        if p:   #parallelisation option
             return 0
         else:
-            return self.optimize_optunity(n_evals, data, labels, **kwargs)
+            return self.optimize_optunity(data, labels, n_evals, num_folds, **kwargs)
     
-    def optimize_optunity(self, n_evals, data, labels, **kwargs):
-        cv_decorator = optunity.cross_validated(x=data, y=labels, num_folds=5)
+    def optimize_optunity(self, data, labels, n_evals, num_folds, **kwargs):
+        cv_decorator = optunity.cross_validated(x=data, y=labels, num_folds=num_folds)
         scoreModel = cv_decorator(self.score_model)
         return optunity.maximize(scoreModel, num_evals=n_evals, **kwargs)
 
@@ -59,4 +59,6 @@ data = load_csv("abalone.data")
 labels = load_labels("abalone.labels")
 
 model= scoreModel(SVC, 'accuracy_score')
-model.hyp_opt_optunity(data, labels, False, 5, C=[5, 7], gamma=[0, 1])
+model.hyp_opt_optunity(data, labels, False, 5, 5, C=[5, 7], gamma=[0, 1])
+
+
