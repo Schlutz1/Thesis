@@ -1,7 +1,7 @@
 # hyperpameter optimisation on cart pole framework
 
 from gaussianProcess import gaussian_process, vector_2d, range_handling
-from surrogateFunction import next_parameter_by_ei
+from gaussianProcess import next_parameter_by_ei
 from writeFunction import write_function
 from rlBrain import policy_gradient
 
@@ -33,18 +33,27 @@ for meta_iteration in range(meta_trials):  # third level iteration
 
 	# hyperparameters
 	# optimal learning_rate = 0.02
+	# reward_decay = 0.99
 	learning_rate_range = [0.001, 0.1]
-	reward_decay = 0.99
+	reward_decay_range = [0.01, 1]
 	scores, parameters = [], []
 	normalisation_factor, min_learning_rate, max_learning_rate, learning_rate_choices = range_handling(
 		learning_rate_range
+	)
+	normalisation_factor_decay, min_reward_decay, max_reward_decay, reward_decay_choices = range_handling(
+		reward_decay_range
 	)
 
 	for opt_iteration in range(1, optimisation_range + 1):  # second level iteration
 
 		print("This is bayesian iteration: " + str(opt_iteration))
 		if opt_iteration in (1, 2):
+			
 			learning_rate = random.randint(
+				min_learning_rate, max_learning_rate)
+			learning_rate = learning_rate * normalisation_factor
+
+			learning_dec = random.randint(
 				min_learning_rate, max_learning_rate)
 			learning_rate = learning_rate * normalisation_factor
 
