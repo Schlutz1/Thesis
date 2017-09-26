@@ -4,6 +4,8 @@ import sklearn.metrics
 from sklearn.svm import SVC
 import numpy as np
 
+from client_model import *
+
 def load_csv(filename):
     data = []
 
@@ -54,10 +56,8 @@ class scoreModel:
         return optunity.maximize(scoreModel, num_evals=n_evals, **kwargs)
 
 
+if __name__ == "__main__" :
 
-data = load_csv("abalone.data")
-labels = load_labels("abalone.labels")
-
-model= scoreModel(SVC, 'accuracy_score')
-model.hyp_opt_optunity(data, labels, False, 5, C=[5, 7], gamma=[0, 1])
+    model= scoreModel(SVC, 'accuracy_score')
+    model.hyp_opt_optunity(data, labels, False, 5, C=[5, 7], gamma=[0, 1])
 
