@@ -60,4 +60,4 @@ labels = load_labels("abalone.labels")
 
 model= scoreModel(SVC, 'accuracy_score')
 model.hyp_opt_optunity(data, labels, False, 5, C=[5, 7], gamma=[0, 1])
-print model
+
