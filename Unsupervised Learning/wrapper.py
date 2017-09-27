@@ -3,6 +3,12 @@ import RL_Optunity_CartPole.RL_brain
 
 from RL_Bayesian_CartPole.run_CartPole import run_cartpole as bayesian
 
+def optimize(optimizer, **kwargs):
+	if optimizer == "Optunity":
+		optimize_optunity(**kwargs)
+	elif optimizer == "Bayesian":
+		optimize_bayesian(10, 10, 100, [0.001, 0.1], [0.01, 1])
+
 def optimize_bayesian(meta_trials, optimisation_range,\
 		reinforcement_learning_range,lr, rd):
 	bayesian()
@@ -14,5 +20,4 @@ def optimize_optunity(n_evals, solver, lr, rd):
     print("Solution:", solution)
     print("Details:", details)
 
-optimize_bayesian(10, 10, 100, [0.001, 0.1], [0.01, 1])
-#optimize_optunity(20, "cma-es", [0.001, 0.03], [0.01, 0.99])
+optimize("Optunity", n_evals=20, solver="cma-es", lr=[0.001, 0.03], ld=[0.01, 0.99])
