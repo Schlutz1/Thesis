@@ -1,9 +1,9 @@
 # hyperpameter optimisation on cart pole framework
 
-from gaussianProcess import gaussian_process, vector_2d, range_handling
-from gaussianProcess import next_parameter_by_ei
-from writeFunction import write_function
-from rlBrain import policy_gradient
+from .gaussianProcess import gaussian_process, vector_2d, range_handling
+from .gaussianProcess import next_parameter_by_ei
+from .writeFunction import write_function
+from .rlBrain import policy_gradient
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,7 +17,7 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 	learning_rate_range, reward_decay_range):
 	# renders environment if total episode reward is greater then this threshold
 	DISPLAY_REWARD_THRESHOLD = 400
-	RENDER = False  # rendering wastes time
+	RENDER = True  # rendering wastes time
 
 	env = gym.make('CartPole-v0')
 	env.seed(1)     # reproducible, general Policy gradient has high variance
@@ -93,8 +93,8 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 			scores.append(bayesian_cost_value)
 			parameters.append(learning_rate)
 
-			print scores
-			print parameters
+			print(scores)
+			print(parameters)
 
 			if opt_iteration < 2:
 				continue  # 2 samples needed for inference
@@ -114,9 +114,9 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 		final_score.append(scores[max_score_index])
 		learning_rate_array.append(parameters[max_score_index])
 
-		print parameters[max_score_index]  # final learning rate
+		print(parameters[max_score_index])  # final learning rate
 
 	optimal_learning_rate = max(set(parameters), key=parameters.count)
-	print "Optimal learning rate : " + str(optimal_learning_rate)
+	print("Optimal learning rate : " + str(optimal_learning_rate))
 
 	write_function(trial_number, learning_rate_array, final_score)
