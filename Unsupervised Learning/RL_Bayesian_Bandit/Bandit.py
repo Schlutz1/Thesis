@@ -12,8 +12,8 @@ import csv
 
 # Note, you may treat these as black box functions as they are entirely
 # statistical methods
-from gaussianProcess import gaussian_process, vector_2d
-from surrogateFunction import next_parameter_by_ei
+from .gaussianProcess import gaussian_process, vector_2d
+from .gaussianProcess import next_parameter_by_ei
 
 
 def writeFunction(trial_number, learning_rate, final_score) :
@@ -82,26 +82,20 @@ def bandit_function(total_episodes, learning_rate, e, bandits, noramlise_reward)
 			# Update our running tally of scores.
 			total_reward[action] += reward
 			if i % 50 == 0:
-				print "Running reward for the " + str(num_bandits) + " bandits: " + str(total_reward)
+				print("Running reward for the " + str(num_bandits) + " bandits: " + str(total_reward))
 			i += 1
-	print "The agent thinks bandit " + str(np.argmax(ww)+1) + " is the most promising...."
+	print("The agent thinks bandit " + str(np.argmax(ww)+1) + " is the most promising....")
 	
 	reward_value = [a*b for a,b in zip(total_reward, noramlise_reward)]
 	return (sum(reward_value))
 
 # intialisation
-if __name__ == '__main__':
-
-		# problem space definition
-	bandits = [0.5, 0, -0.3, -0.6]
+def run_bandit(n_iter, lr, n_episodes, bandits, e):
+	# problem space
 	noramlise_reward = np.absolute(bandits)
-	# hyperparameter defintions
-	total_episodes = 1000  # Set total number of episodes to train agent on.
-	learning_rate_range = [0.0001, 1]  # Learning rate of model
-	e = 0.2  # Set the chance of taking a random action.
-	n_iter = 10
+	
 
-	min_learning_rate, max_learning_rate = learning_rate_range
+	min_learning_rate, max_learning_rate = lr
 	learning_rate_choices = np.arange(min_learning_rate, max_learning_rate + 1)
 
 	normalisation_factor = min_learning_rate
@@ -121,22 +115,22 @@ if __name__ == '__main__':
 		trial_number.append(i)
 
 		for iteration in range(1, n_iter + 1):  # gaussian iteration process starts here
-			print "this is iteration number: " + str(i) + "_" + str(iteration)
+			print("this is iteration number: " + str(i) + "_" + str(iteration))
 			if iteration in (1, 2):
 				learning_rate = random.randint(
 					min_learning_rate, max_learning_rate)
 				learning_rate = learning_rate * normalisation_factor
-			print learning_rate
+			print(learning_rate)
 
-			res = bandit_function(total_episodes, learning_rate, e, bandits, noramlise_reward)
+			res = bandit_function(n_episodes, learning_rate, e, bandits, noramlise_reward)
 
 			print("Resultant score: " + str(res))
 
 			scores.append(res)
 			parameters.append(learning_rate)
 
-			print scores
-			print parameters
+			print(scores)
+			print(parameters)
 
 			if iteration < 2:
 				continue  # need two samples to actually minimise
@@ -156,10 +150,10 @@ if __name__ == '__main__':
 		final_score.append(scores[max_score_index])
 		learning_rate_array.append(parameters[max_score_index])
 		
-		print parameters[max_score_index] # final learning rate
+		print(parameters[max_score_index]) # final learning rate
 
 	optimal_learning_rate = max(set(parameters), key=parameters.count)
-	print "Optimal learning rate : " + str(optimal_learning_rate)
+	print("Optimal learning rate : " + str(optimal_learning_rate))
 
 	writeFunction(trial_number, learning_rate_array, final_score)
 
