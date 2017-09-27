@@ -2,21 +2,25 @@ import csv
 import optunity
 import sklearn.metrics
 from sklearn.svm import SVC
+from sklearn.svm import SVR
+from sklearn.linear_model import LinearRegression
 import numpy as np
 from sklearn.decomposition import PCA 
 #import matplotlib.pyplot as plt
 
 def load_csv(filename):
     data = []
+    labels = []
 
     # open file
     with open(filename, "r") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         # load as a list of instances
         for row in reader:
-            data.append(row)
+            data.append(row[:-1])
+            labels.append(row[-1])
     # done!
-    return data
+    return data, labels
 
 def load_labels(filename):
     data = []
@@ -97,20 +101,22 @@ def compute_pca(hyperparam_scores):
     return {'x_coord_pca': x_coord_pca, 'y_coord_pca': y_coord_pca, 'corrMatrix': eigenvals}
     
 
+def optimize(model_str, filename, metric, **kwargs):
+    data, labels = load_csv(filename)
+    if model_str == "SVC":
+        m = SVC
+    elif model_str == "Regression":
+        m = LinearRegression
+    elif model_str == "SVR":
+        m = SVR
+    model = scoreModel(m, ["C", "gamma"], metric)
+    results = model.hyp_opt_optunity(data, labels, False, 5, 5, **kwargs)
+    opt_hyperparams = [results[0], results[1][0] ]
+    hyperparam_scores = results[1][2]
+    pca_report = compute_pca(hyperparam_scores)
 
-data = load_csv("abalone.data")
-labels = load_labels("abalone.labels")
 
-model= scoreModel(SVC, ['C'], 'accuracy_score')
-results = model.hyp_opt_optunity(data, labels, False, 5, 5, C=[5, 100], gamma=[0, 1])
-
-
-
-opt_hyperparams = [results[0], results[1][0] ]
-hyperparam_scores = results[1][2]
-pca_report = compute_pca(hyperparam_scores)
-
-
+print(optimize("SVC", "abalone.data", "accuracy_score", C=[10, 15], gamma=[0.1,5]))
 
 '''    
 #For Principal Component = 3
