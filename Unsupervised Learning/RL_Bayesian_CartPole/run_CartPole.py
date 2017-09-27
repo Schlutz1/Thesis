@@ -6,7 +6,6 @@ from writeFunction import write_function
 from writeFunction import clear_file
 from .rlBrain import policy_gradient
 
-import matplotlib.pyplot as plt
 import numpy as np
 import gym
 import random

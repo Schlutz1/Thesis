@@ -12,7 +12,6 @@ gym: 0.8.0
 
 import gym
 from .rlBrain import policy_gradient
-import matplotlib.pyplot as plt
 
 # lr: learning rate
 # rd: reward decay
@@ -67,12 +66,6 @@ def run_mountaincar(lr, rd, n_episodes):
                 print("episode:", i_episode, "  reward:", int(running_reward))
 
                 vt = RL.learn()  # train
-
-                if i_episode == 30:
-                    plt.plot(vt)  # plot the episode vt
-                    plt.xlabel('episode steps')
-                    plt.ylabel('normalized state-action value')
-                    plt.show()
 
                 break
 
