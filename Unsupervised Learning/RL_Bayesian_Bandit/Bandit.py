@@ -1,5 +1,4 @@
 # Cartpole Implementation
-
 from neupy import algorithms, layers
 import tensorflow as tf
 import numpy as np
@@ -97,6 +96,7 @@ def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
 	trial_number = []
 	learning_rate_array = []
 	final_score = []
+	j = 0
 
 	for i in range(meta_trials) :
 		scores = []
@@ -121,6 +121,10 @@ def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
 
 			print(scores)
 			print(parameters)
+			j+=1
+
+			write_function(filename, "Reinforcement Learning", "Gaussian", "Bandit", "1", "Score",
+        		j, learning_rate,"", str(res))
 
 			if iteration < 2:
 				continue  # need two samples to actually minimise
@@ -129,9 +133,6 @@ def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
 			y_mean, y_std = gaussian_process(parameters, scores, learning_rate_choices)
 			 
 			y_min = min(scores)
-
-			write_function(filename, "Reinforcement Learning", "Gaussian", "Bandit", "1", "Score",
-        		iteration + i, learning_rate,"",res)
 
 			learning_rate = next_parameter_by_ei(y_min, y_mean, y_std, learning_rate_choices)
 
