@@ -1,6 +1,6 @@
 import gym
-from RL_brain import PolicyGradient
-from writeFunction import write_function
+from .RL_brain import PolicyGradient
+from RL_Bayesian_CartPole.writeFunction import write_function
 import matplotlib.pyplot as plt
 import optunity
 
@@ -49,15 +49,3 @@ def run_cartpole(learning_rate, reward_decay):
             observation = observation_
     print(Total_Rewards,"\n")
     return Total_Rewards
-
-# By default, num_particles=10, num_generations=5
-solution, details, suggestion = optunity.maximize(run_cartpole, num_evals=20, solver_name="particle swarm", learning_rate=[0.001, 0.03], reward_decay=[0.01, 0.99])
-print("Solution:", solution)
-print("Details:", details)
-# print("Optimum:", details[0])
-# print("Iterations and Time:", details[1])
-# print("Call_Log:", details[2])
-# print(len(details))
-# # print(details[""])
-print("Suggestion:", suggestion)
-#write_function(trial_number, learning_rate, reward_decay, final_score)
