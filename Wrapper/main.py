@@ -32,11 +32,17 @@ def load_labels(filename):
 
 
 class scoreModel:
-    def __init__(self, model, scoring_method):
+    def __init__(self, model, discrete_params, scoring_method):
+        
         self.model = model
-        self.scoring_method = scoring_method    #str of name of scoring method to use
+        self.scoring_method = scoring_method            #str of name of scoring method to use
+        self.discrete_params = discrete_params          #list of names of discrete params 
         
     def score_model(self, x_train, y_train, x_test, y_test, **params):
+        
+        for paramName in self.discrete_params:
+            params[paramName] = int(params[paramName])
+        
         model_inst = self.model(**params)
         model_inst.fit(x_train, y_train)
         decision_vals = model_inst.predict(x_test)
@@ -48,16 +54,26 @@ class scoreModel:
         if p:   #parallelisation option
             return 0
         else:
-            return self.optimize_optunity(data, labels, n_evals, num_folds, **kwargs)
+            hypOpt_report =  self.optimize_optunity(data, labels, n_evals, num_folds, **kwargs)
+            hypOpt_report = self.cleanReport(hypOpt_report)
+            
+        return hypOpt_report
     
     def optimize_optunity(self, data, labels, n_evals, num_folds, **kwargs):
         cv_decorator = optunity.cross_validated(x=data, y=labels, num_folds=num_folds)
         scoreModel = cv_decorator(self.score_model)
         optimisedHyp = optunity.maximize(scoreModel, num_evals=n_evals, **kwargs)
+        
         return optimisedHyp
-
-
-
+    
+    def cleanReport(self, report):
+        #cleans report: converts discrete vals to int from optunity's hyperopt report                
+        for paramName in self.discrete_params:
+            report[0][paramName] = int(report[0][paramName])
+            report[1][2]['args'][paramName] = [int(x) for x in report[1][2]['args'][paramName]]
+        
+        return report
+    
 def compute_pca(hyperparam_scores):    
     #hyperparam_scores: dict of args and score values of each arg combo
         
@@ -85,8 +101,11 @@ def compute_pca(hyperparam_scores):
 data = load_csv("abalone.data")
 labels = load_labels("abalone.labels")
 
-model= scoreModel(SVC, 'accuracy_score')
-results = model.hyp_opt_optunity(data, labels, False, 5, 5, C=[5, 7], gamma=[0, 1])
+model= scoreModel(SVC, ['C'], 'accuracy_score')
+results = model.hyp_opt_optunity(data, labels, False, 5, 5, C=[5, 100], gamma=[0, 1])
+
+
+
 opt_hyperparams = [results[0], results[1][0] ]
 hyperparam_scores = results[1][2]
 pca_report = compute_pca(hyperparam_scores)

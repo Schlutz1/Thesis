@@ -3,6 +3,7 @@
 from .gaussianProcess import gaussian_process, vector_2d, range_handling
 from .gaussianProcess import next_parameter_by_ei
 from writeFunction import write_function
+from writeFunction import clear_file
 from .rlBrain import policy_gradient
 
 import matplotlib.pyplot as plt
@@ -15,6 +16,8 @@ import csv
 
 def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 	learning_rate_range, reward_decay_range):
+	filename = "cartpole_meta_analysis_(gaussian).csv"
+	clear_file(filename)
 	# renders environment if total episode reward is greater then this threshold
 	DISPLAY_REWARD_THRESHOLD = 400
 	RENDER = True  # rendering wastes time
@@ -92,6 +95,9 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 
 			scores.append(bayesian_cost_value)
 			parameters.append(learning_rate)
+
+			write_function(filename, "Reinforcement Learning", "Gaussian", "RLBrain", "2", "CartPole",
+        		opt_iteration,learning_rate , 0.99,bayesian_cost_value)
 
 			print(scores)
 			print(parameters)

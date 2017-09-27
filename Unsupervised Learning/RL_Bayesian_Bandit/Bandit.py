@@ -15,6 +15,7 @@ import csv
 from .gaussianProcess import gaussian_process, vector_2d
 from .gaussianProcess import next_parameter_by_ei
 from writeFunction import write_function
+from writeFunction import clear_file
 
 
 def writeFunction(trial_number, learning_rate, final_score) :
@@ -91,7 +92,9 @@ def bandit_function(total_episodes, learning_rate, e, bandits, noramlise_reward)
 	return (sum(reward_value))
 
 # intialisation
-def run_bandit(n_iter, lr, n_episodes, bandits, e):
+def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
+	filename = "bandit_meta_analysis.csv"
+	clear_file(filename)
 	# problem space
 	noramlise_reward = np.absolute(bandits)
 	
@@ -102,8 +105,6 @@ def run_bandit(n_iter, lr, n_episodes, bandits, e):
 	normalisation_factor = min_learning_rate
 	min_learning_rate, max_learning_rate = min_learning_rate / \
 		normalisation_factor, max_learning_rate / normalisation_factor
-
-	meta_trials = 100
 
 	trial_number = []
 	learning_rate_array = []
@@ -141,10 +142,14 @@ def run_bandit(n_iter, lr, n_episodes, bandits, e):
 			 
 			y_min = min(scores)
 
+			write_function(filename, "Reinforcement Learning", "Gaussian", "Bandit", "1", "Score",
+        		iteration + i, learning_rate,"",res)
+
 			learning_rate = next_parameter_by_ei(y_min, y_mean, y_std, learning_rate_choices)
 
 			if y_min == 0 or learning_rate in parameters :
 				break #lowest expectation achieved
+
 			
 		
 		max_score_index = np.argmax(scores)
@@ -155,8 +160,6 @@ def run_bandit(n_iter, lr, n_episodes, bandits, e):
 
 	optimal_learning_rate = max(set(parameters), key=parameters.count)
 	print("Optimal learning rate : " + str(optimal_learning_rate))
-
-	writeFunction(trial_number, learning_rate_array, final_score)
 
 
 

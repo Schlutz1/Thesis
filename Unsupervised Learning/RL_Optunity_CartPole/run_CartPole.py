@@ -4,7 +4,7 @@ from writeFunction import write_function
 import matplotlib.pyplot as plt
 import optunity
 
-def run_cartpole(lr, rd):
+def run_cartpole(learn_rate, rew_decay):
     Total_Rewards = 0 # Total Rewards
     DISPLAY_REWARD_THRESHOLD = 400  # renders environment if total episode reward is greater then this threshold
     RENDER = False  # rendering wastes time
@@ -18,8 +18,8 @@ def run_cartpole(lr, rd):
     RL = PolicyGradient(
         n_actions=env.action_space.n,
         n_features=env.observation_space.shape[0],
-        learning_rate=lr,
-        reward_decay=rd,
+        learning_rate=learn_rate,
+        reward_decay=rew_decay,
         # output_graph=True,
     )
     for i_episode in range(30):
@@ -46,6 +46,6 @@ def run_cartpole(lr, rd):
                 #     plt.show()
                 break
             observation = observation_
-    write_function("cartpole_meta_analysis2.csv", "Unsup", "algo_type", "model", "num_hp", "eval_type",\
-        "iteration", lr, rd, Total_Rewards)
+    write_function("cartpole_meta_analysis.csv", "Reinforcement Learning", "algo_type", "_", "2", "Cart Pole",\
+        "iteration", learn_rate, rew_decay, Total_Rewards)
     return Total_Rewards
