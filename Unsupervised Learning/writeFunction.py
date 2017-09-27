@@ -12,4 +12,4 @@ def write_function(filename, learn_type, algo_type, model, num_hp, eval_type,\
 	with open(filename,'a') as fin:
 		csv.writer(fin)
 		writer = csv.writer(fin)
-		writer.writerow((learn_type, algo_type, model, num_hp, eval_type, iteration, hp1, hp2, eval_score))
+		writer.writerow((learn_type, algo_type, model, num_hp, eval_type, iteration, eval_score, hp1, hp2))

@@ -12,7 +12,6 @@ gym: 0.8.0
 
 import gym
 from .rlBrain import policy_gradient
-import matplotlib.pyplot as plt
 
 # lr: learning rate
 # rd: reward decay
@@ -23,9 +22,9 @@ def run_mountaincar(lr, rd, n_episodes):
     # episode: 489   reward: -1006
     # episode: 628   reward: -502
 
-    RENDER = False  # rendering wastes time
+    RENDER = True  # rendering wastes time
 
-    env = gym.make('MountainCar-v0')
+    env = gym.make('CartPole-v0')
     env.seed(1)     # reproducible, general Policy gradient has high variance
     env = env.unwrapped
 
@@ -68,12 +67,9 @@ def run_mountaincar(lr, rd, n_episodes):
 
                 vt = RL.learn()  # train
 
-                if i_episode == 30:
-                    plt.plot(vt)  # plot the episode vt
-                    plt.xlabel('episode steps')
-                    plt.ylabel('normalized state-action value')
-                    plt.show()
-
                 break
 
             observation = observation_
+
+    write_function(filename, "Reinforcement Learning", "Gaussian", "RLBrain", "2", "CartPole",
+        opt_iteration,learning_rate , 0.99,bayesian_cost_value)

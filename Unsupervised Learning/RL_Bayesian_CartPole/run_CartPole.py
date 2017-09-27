@@ -6,7 +6,6 @@ from writeFunction import write_function
 from writeFunction import clear_file
 from .rlBrain import policy_gradient
 
-import matplotlib.pyplot as plt
 import numpy as np
 import gym
 import random
@@ -20,7 +19,7 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 	clear_file(filename)
 	# renders environment if total episode reward is greater then this threshold
 	DISPLAY_REWARD_THRESHOLD = 400
-	RENDER = True  # rendering wastes time
+	RENDER = False  # rendering wastes time
 
 	env = gym.make('CartPole-v0')
 	env.seed(1)     # reproducible, general Policy gradient has high variance
@@ -28,6 +27,7 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 
 	# iteration variables
 	trial_number, learning_rate_array, final_score = [], [], []
+	j=0
 
 	for meta_iteration in range(meta_trials):  # third level iteration
 		trial_number.append(meta_iteration)
@@ -95,9 +95,10 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 
 			scores.append(bayesian_cost_value)
 			parameters.append(learning_rate)
+			j+=1
 
 			write_function(filename, "Reinforcement Learning", "Gaussian", "RLBrain", "2", "CartPole",
-        		opt_iteration,learning_rate , 0.99,bayesian_cost_value)
+        		j,learning_rate , 0.99,bayesian_cost_value)
 
 			print(scores)
 			print(parameters)

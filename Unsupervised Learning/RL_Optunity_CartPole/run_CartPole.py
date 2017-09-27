@@ -1,7 +1,6 @@
 import gym
 from .RL_brain import PolicyGradient
 from writeFunction import write_function
-import matplotlib.pyplot as plt
 import optunity
 
 def run_cartpole(learn_rate, rew_decay):
@@ -39,11 +38,6 @@ def run_cartpole(learn_rate, rew_decay):
                 # print("episode:", i_episode, "  reward:", int(running_reward))
                 Total_Rewards += running_reward
                 vt = RL.learn()
-                # if i_episode == 0:
-                #     plt.plot(vt)    # plot the episode vt
-                #     plt.xlabel('episode steps')
-                #     plt.ylabel('normalized state-action value')
-                #     plt.show()
                 break
             observation = observation_
     write_function("cartpole_meta_analysis.csv", "Reinforcement Learning", "algo_type", "_", "2", "Cart Pole",\
