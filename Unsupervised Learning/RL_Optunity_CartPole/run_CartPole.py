@@ -1,11 +1,10 @@
 import gym
 from .RL_brain import PolicyGradient
-from RL_Bayesian_CartPole.writeFunction import write_function
+from writeFunction import write_function
 import matplotlib.pyplot as plt
 import optunity
 
-def run_cartpole(learning_rate, reward_decay):
-    print("LR:", learning_rate," RD:",reward_decay)
+def run_cartpole(lr, rd):
     Total_Rewards = 0 # Total Rewards
     DISPLAY_REWARD_THRESHOLD = 400  # renders environment if total episode reward is greater then this threshold
     RENDER = False  # rendering wastes time
@@ -19,8 +18,8 @@ def run_cartpole(learning_rate, reward_decay):
     RL = PolicyGradient(
         n_actions=env.action_space.n,
         n_features=env.observation_space.shape[0],
-        learning_rate=0.02,
-        reward_decay=0.99,
+        learning_rate=lr,
+        reward_decay=rd,
         # output_graph=True,
     )
     for i_episode in range(30):
@@ -47,5 +46,6 @@ def run_cartpole(learning_rate, reward_decay):
                 #     plt.show()
                 break
             observation = observation_
-    print(Total_Rewards,"\n")
+    write_function("cartpole_meta_analysis2.csv", "Unsup", "algo_type", "model", "num_hp", "eval_type",\
+        "iteration", lr, rd, Total_Rewards)
     return Total_Rewards

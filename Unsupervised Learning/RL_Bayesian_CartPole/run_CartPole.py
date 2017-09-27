@@ -2,7 +2,7 @@
 
 from .gaussianProcess import gaussian_process, vector_2d, range_handling
 from .gaussianProcess import next_parameter_by_ei
-from .writeFunction import write_function
+from writeFunction import write_function
 from .rlBrain import policy_gradient
 
 import matplotlib.pyplot as plt

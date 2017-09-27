@@ -14,6 +14,7 @@ import csv
 # statistical methods
 from .gaussianProcess import gaussian_process, vector_2d
 from .gaussianProcess import next_parameter_by_ei
+from writeFunction import write_function
 
 
 def writeFunction(trial_number, learning_rate, final_score) :
