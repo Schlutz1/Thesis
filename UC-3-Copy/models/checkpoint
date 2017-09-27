@@ -1,2 +1,0 @@
-model_checkpoint_path: "client_data_tf_pipe.ckpt-999"
-all_model_checkpoint_paths: "client_data_tf_pipe.ckpt-999"
