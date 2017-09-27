@@ -9,7 +9,6 @@ import json
 import argparse
 from sklearn.feature_extraction.text import HashingVectorizer
 
-
 # Edited 20/04 by Group B
 # Changes:  1. streamline computational graph construction
 #           2. feed_dicts for training
@@ -57,7 +56,7 @@ class ml_metadata:
 
 class ml_pipe:
 
-    def __init__(self, data, model_name, features_numeral, features, classifier, load=False, options='{"isRegression":false}'):
+    def __init__(self, data, model_name, architecture, features_numeral, features, classifier, load=False, options='{"isRegression":false}'):
         # Alpha -> Beta for AdamOptimizer
         self.model = model_name
         self.tensor_df = pd.DataFrame()
@@ -69,7 +68,8 @@ class ml_pipe:
 
         # SET THESE DYNAMICALLY THROUGH SPLUNK!
         # Define network architecture - make this user input!
-        self.architecture = [128, 128, 64]
+        #ideal arch self.architecture = [128, 128, 64]
+        self.architecture = architecture
         self.batch_size = 128  # Training batch size
         self.val_batch_size = 32  # Validation batch size
         # self.beta = 1e-4
@@ -92,14 +92,17 @@ class ml_pipe:
             self.graph = tf.Graph()
             self.create_graph()
 
-            # Execute the training graph
-            self.execute_training_graph()
+            # Execute the training graph 
+            self.final_score = self.execute_training_graph()
         else:
             self.graph = tf.Graph()
             self.create_graph()
 
             # Execute the prediction graph
             self.execute_prediction_graph()
+
+    def get_final_score(self):
+        return self.final_score
 
     def curate_data(self, data):
         #df_Xpf, df_y = data[data.columns[:-1]], pd.get_dummies(data[data.columns[-1]])
@@ -375,6 +378,7 @@ class ml_pipe:
             print "Training complete! Time elapsed: %g s\n" % (delta_t)
             print "Steps: %d, epochs: %d\n" % (self.steps, self.steps*self.batch_size/(self.X_train.shape[0]))
             print "Train accuracy: %g\nValidation accuracy: %g\n" % (final_train_accuracy, final_test_accuracy)
+            return final_test_accuracy
 
     def execute_prediction_graph(self):
         """
@@ -406,8 +410,8 @@ class ml_pipe:
         delta_t = time.time() - start_time
         print "Inference complete. Duration: %g s. Results saved in: %s" % (delta_t, self.modelbasedir)
 
-
-def client_model():
+def client_model(architecture, filepath): #use if called by optimizing wrapper
+#if __name__ == "__main__" : #use if standalone
 
     parser = argparse.ArgumentParser(
         description='Train/make predictions using a neural network model.')
@@ -417,19 +421,21 @@ def client_model():
                         help='Flag to make predictions. Otherwise we train the network.')
     args = parser.parse_args()
 
-    print "Loading %s" % (args.data_file)
+    print "Loading %s" % (filepath)
     path2csv = os.path.join(
-        '/Users/ms_acn/Documents/Thesis/UC-3/lookups', args.data_file)
+        '/Users/ms_acn/Documents/Thesis/UC-3/lookups', filepath)
     features = pd.read_csv(path2csv).fillna('')
     model_name = os.path.splitext(args.data_file)[0]
 
     if args.predict:
         print "Inference from previously trained network."
-        ml_pipe(data=features, model_name=model_name, features_numeral='', features=[
+        ml = ml_pipe(data=features, model_name=model_name, architecture=architecture, features_numeral='', features=[
                 'problem_abstract', 'asset_id'], classifier='Category', load=True, options='{"isRegression":false}')
     else:
         print "Training neural network on dataset"
-        ml_pipe(data=features, model_name=model_name, features_numeral='', features=[
+        ml = ml_pipe(data=features, model_name=model_name, architecture=architecture, features_numeral='', features=[
                 'problem_abstract', 'asset_id'], classifier='Category', load=False, options='{"isRegression":false}')
 
         print "Classifier trained, model saved. Bye!\n"
+
+    return ml.get_final_score()
