@@ -17,18 +17,6 @@ from .gaussianProcess import next_parameter_by_ei
 from writeFunction import write_function
 from writeFunction import clear_file
 
-
-def writeFunction(trial_number, learning_rate, final_score) :
-	outputString = "bandit_meta_analysis.csv"
-	with open(outputString,'wb') as fin: 
-			testArray = (trial_number, learning_rate, final_score)
-			fieldNames = ['trial_number', 'learning_rate', 'final_score']
-			writer = csv.writer(fin)
-			testArray = zip(*testArray)
-			writer.writerow(fieldNames)
-			for i in range(len(trial_number)):
-				writer.writerow(testArray[i])
-
 def pullBandit(bandit):
 	# Get a random number.
 	result = np.random.randn(1)

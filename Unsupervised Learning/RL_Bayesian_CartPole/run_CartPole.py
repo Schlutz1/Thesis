@@ -20,7 +20,7 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 	clear_file(filename)
 	# renders environment if total episode reward is greater then this threshold
 	DISPLAY_REWARD_THRESHOLD = 400
-	RENDER = True  # rendering wastes time
+	RENDER = False  # rendering wastes time
 
 	env = gym.make('CartPole-v0')
 	env.seed(1)     # reproducible, general Policy gradient has high variance
