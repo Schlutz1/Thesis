@@ -53,16 +53,12 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 					min_learning_rate, max_learning_rate)
 				learning_rate = learning_rate * normalisation_factor
 
-				reward_decay = random.randint(
-					min_reward_decay, max_reward_decay)
-				reward_decay = reward_decay * normalisation_factor
-
 			# define RL object
 			RL = policy_gradient(
 				n_actions=env.action_space.n,
 				n_features=env.observation_space.shape[0],
 				learning_rate=learning_rate,
-				reward_decay=reward_decay,
+				reward_decay=0.99,
 				# output_graph=True,
 			)
 
@@ -100,8 +96,8 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 			scores.append(bayesian_cost_value)
 			parameters.append(learning_rate)
 
-			write_function(filename, "Reinforcement Learning", "Gaussian", "_", "1", "CartPole",
-        	meta_iteration,learning_rate , 0.99,bayesian_cost_value)
+			write_function(filename, "Reinforcement Learning", "Gaussian", "RLBrain", "2", "CartPole",
+        		opt_iteration,learning_rate , 0.99,bayesian_cost_value)
 
 			print(scores)
 			print(parameters)

@@ -142,10 +142,14 @@ def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
 			 
 			y_min = min(scores)
 
+			write_function(filename, "Reinforcement Learning", "Gaussian", "Bandit", "1", "Score",
+        		iteration + i, learning_rate,"",res)
+
 			learning_rate = next_parameter_by_ei(y_min, y_mean, y_std, learning_rate_choices)
 
 			if y_min == 0 or learning_rate in parameters :
 				break #lowest expectation achieved
+
 			
 		
 		max_score_index = np.argmax(scores)
@@ -153,8 +157,6 @@ def run_bandit(meta_trials, n_iter, lr, n_episodes, bandits, e):
 		learning_rate_array.append(parameters[max_score_index])
 		
 		print(parameters[max_score_index]) # final learning rate
-		write_function(filename, "Reinforcement Learning", "Gaussian", "_", "1", "eval_type",
-        	i, lr, "",parameters[max_score_index])
 
 	optimal_learning_rate = max(set(parameters), key=parameters.count)
 	print("Optimal learning rate : " + str(optimal_learning_rate))

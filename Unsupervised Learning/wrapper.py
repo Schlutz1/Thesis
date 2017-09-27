@@ -26,8 +26,8 @@ def optimize_optunity(**kwargs):
 
 
 #optimize("Optunity", None, f=opt_cartpole, num_evals=200, learn_rate=[0.001, 0.1], rew_decay=[0.01, 1])
-#optimize("Bayesian", "Bandit", meta_trials=100, n_iter=200, lr=[0.001, 0.1], n_episodes=20, bandits=[0.5, 0, -0.3, -0.6], e=0.2)
-optimize("Bayesian", "Cart Pole", meta_trials=100, optimisation_range=50, reinforcement_learning_range=50,\
-    learning_rate_range=[0.001, 0.1], reward_decay_range=[0.01, 1])
+optimize("Bayesian", "Bandit", meta_trials=100, n_iter=200, lr=[0.001, 0.1], n_episodes=20, bandits=[0.5, 0, -0.3, -0.6], e=0.2)
+#optimize("Bayesian", "Cart Pole", meta_trials=100, optimisation_range=50, reinforcement_learning_range=50,\
+    #learning_rate_range=[0.001, 0.1], reward_decay_range=[0.01, 1])
 #optimize("Bandit", n_iter=10, lr=[0.0001, 1], n_episodes=1000,\
     #bandits=[0.5, 0, -0.3, -0.6], e=0.2)
