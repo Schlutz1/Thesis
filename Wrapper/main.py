@@ -111,12 +111,67 @@ def optimize(model_str, filename, metric, **kwargs):
         m = SVR
     model = scoreModel(m, ["C", "gamma"], metric)
     results = model.hyp_opt_optunity(data, labels, False, 5, 5, **kwargs)
+
+def resultsOut(filename, results):
     opt_hyperparams = [results[0], results[1][0] ]
     hyperparam_scores = results[1][2]
     pca_report = compute_pca(hyperparam_scores)
+    with open(filename, 'a') as f:
+        csv.writer(f)
+        writer = csv.writer(f)
+        
+        argColNames = list(hyperparam_scores['args'].keys())
+        header = argColNames[:]
+        header.extend(['Score', 'PCA_x_coord', 'PCA_y_coord'])
+        
+        writer.writerow(argColNames)
+        n_hyp = len(hyperparam_scores['values'])    
+        X = [[] for i in range(n_hyp)]
+        
+        n=0
+        for i in range(len(hyperparam_scores['values'])):
+            for k,v in hyperparam_scores['args'].items(): 
+                X[n].append(hyperparam_scores['args'][k][i])
+            
+            X[n].append(hyperparam_scores['values'][i])
+            X[n].append(pca_report['x_coord_pca'][i])
+            X[n].append(pca_report['y_coord_pca'][i])
+            
+            n+=1
+        
+        for row in X:
+            writer.writerow(row)
+        
+        writer.writerow(["Best:"])
+        best_hyperparams = list(opt_hyperparams[0].values())
+        best_hyperparams.append(opt_hyperparams[1])
+        writer.writerow(best_hyperparams)
+        
+        writer.writerow(["PCA correlation matrix:"])
+        pca_corrMatrix = pca_report['corrMatrix']
+        pca_header = [""]
+        pca_header.extend(argColNames)
+        writer.writerow(pca_header)
+        
+        for i in range(len(pca_corrMatrix)):
+            pca_row = ["Principal Component {}".format(i+1)]
+            pca_row.extend(pca_corrMatrix[i])
+            writer.writerow(pca_row)
+        
+    return opt_hyperparams, hyperparam_scores, pca_report    
+    
+
+data = load_csv("abalone.data")
+labels = load_labels("abalone.labels")
+
+model= scoreModel(SVC, ['C'], 'accuracy_score')
+results = model.hyp_opt_optunity(data, labels, False, 5, 5, C=[5, 100], gamma=[0, 1])
 
 
-print(optimize("SVC", "abalone.data", "accuracy_score", C=[10, 15], gamma=[0.1,5]))
+
+
+filename = 'hyperparamReport.csv'
+opt_hyperpar, hyperparam_sc, pca_rep = resultsOut(filename, results)
 
 '''    
 #For Principal Component = 3
