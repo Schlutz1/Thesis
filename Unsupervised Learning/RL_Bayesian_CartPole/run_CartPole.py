@@ -27,6 +27,7 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 
 	# iteration variables
 	trial_number, learning_rate_array, final_score = [], [], []
+	j=0
 
 	for meta_iteration in range(meta_trials):  # third level iteration
 		trial_number.append(meta_iteration)
@@ -94,9 +95,10 @@ def run_cartpole(meta_trials, optimisation_range, reinforcement_learning_range,\
 
 			scores.append(bayesian_cost_value)
 			parameters.append(learning_rate)
+			j+=1
 
 			write_function(filename, "Reinforcement Learning", "Gaussian", "RLBrain", "2", "CartPole",
-        		opt_iteration,learning_rate , 0.99,bayesian_cost_value)
+        		j,learning_rate , 0.99,bayesian_cost_value)
 
 			print(scores)
 			print(parameters)
