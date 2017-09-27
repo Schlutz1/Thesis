@@ -1,6 +1,6 @@
 import gym
-from RL_brain import PolicyGradient
-from writeFunction import write_function
+from .RL_brain import PolicyGradient
+from RL_Bayesian_CartPole.writeFunction import write_function
 import matplotlib.pyplot as plt
 import optunity
 
