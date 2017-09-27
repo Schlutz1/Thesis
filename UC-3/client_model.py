@@ -333,7 +333,7 @@ class ml_pipe:
                     self.X_train, self.y_train = self.epoch_shuffle(
                         self.X_train, self.y_train)
                     # print "End of epoch.\n"
-                print self.batch_train[0].shape
+                #print self.batch_train[0].shape
                 # Feed in training data and labels to graph
                 self.feed_dict_train = {self.tf_X: self.batch_train[
                     0], self.tf_labels: self.batch_train[1], self.keep_prob: self.dropout_prob}
