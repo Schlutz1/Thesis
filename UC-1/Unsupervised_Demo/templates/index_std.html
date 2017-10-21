@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Optimisation Framework</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+function checkModel() {
+  var model;
+  model = document.getElementById("model").value;
+
+  if(model=="Ridge Regression" || model=="Lasso"){
+    $("#constraints").load("constraints/RidgeR_Lasso");
+  }
+
+  if(model=="SVC" || model=="SVR"){
+    $("#constraints").load("constraints/SVR_C");
+  }
+
+  if(model=="Logistic Regression"){
+    $("#constraints").load("constraints/Logic");
+  }
+}
+
+function checkLearnType() {
+  var type;
+  type = document.getElementById("type").value;
+  if(type=="Supervised"){
+
+    $("#evaluation").load("eval"); 
+
+    document.getElementById('model').innerHTML = '<option>- select here -</option><option>Lasso</option><option>Logistic Regression </option><option>Ridge Regression</option><option>SVR</option><option>SVC</option>'; 
+  }else{
+    document.getElementById('model').innerHTML = '<option>- select here -</option><option>Bandit</option><option>Cart Pole</option>';
+
+    $("#hp_load").load("constraints/hp_input");
+    
+    document.getElementById('algo').innerHTML = `
+      <option>- select here -</option>
+      <option>Bayesian</option>
+      <option>Particle-swarm</option>
+      <option>Cma-ES</option>
+      <option>Random-Search</option>
+      <option>Grid-Search</option>`;
+  }
+}
+
+function showSelect() {
+  document.getElementById('nav_list').innerHTML = '<li><a href="index_std">Standard Models</a></li><li><a href="index_cus">Customized Models</a></li>';
+}
+
+function loadData(){
+  document.getElementById('loaddata').innerHTML = '<div class="loader"></div>';
+  $(".loader").delay(4000).fadeOut();
+}
+</script>
+
+<style>
+#logo {
+  background-image: url("/static/img/logo.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+}
+
+.loader {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0.8;
+  background: url('/static/img/load.gif') 50% 50% no-repeat rgb(249,249,249);
+}
+</style>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#" onclick="showSelect()">Pipeline Automation</a>
+    </div>
+    <ul class="nav navbar-nav" id="nav_list">
+<!--       <li><a href="index_std">Standard Models</a></li>
+      <li><a href="index_cus">Customized Models</a></li> -->
+    </ul>
+  </div>
+</nav>
+
+<div class="jumbotron text-center" id="logo">
+  <h2>Optimised ML Pipeline Automation</h2>
+  <p>Select standard models and hyperparameters to optimize</p> 
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+
+    <div class="col-sm-6">
+      <form class="form-horizontal" action="response_std" method="POST" 
+            enctype="multipart/form-data" onsubmit="return checkConstraint()">
+        
+        <div class="form-group">
+          <label for="type">Learn Type</label>
+          <select class="form-control" id="type" name="type" onchange="checkLearnType()">
+            <option>- select here -</option>
+            <option>Supervised</option>
+            <option>Unsupervised</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="algo">Algorithm Type</label>
+          <select class="form-control" id="algo" name="algo">
+            <option>- select here -</option>
+            <option>Particle-swarm</option>
+            <option>Cma-ES</option>
+            <option>Random-Search</option>
+            <option>Grid-Search</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="model">Standard Models</label>
+          <select class="form-control" id="model" name="model" onchange="checkModel()">
+            <option>- select here -</option>
+          </select>
+        </div>
+
+        <div id="constraints"></div>
+
+        <div id="evaluation"></div>
+
+        <div id="hp_load"></div>
+
+        <div id="loaddata"></div>
+
+        <div class="form-group">        
+          <div class="col-sm-offset-8 col-sm-4">
+            <br><br>
+            <button type="submit" id="submit" class="btn btn-info" onclick="loadData()">Optimize</button>
+            <button type="reset" class="btn">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-sm-3">
+    </div>
+    
+  </div>
+</div>
+
+</body>
+</html>

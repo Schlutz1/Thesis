@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Optimisation Framework</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+function checkModel() {
+}
+
+function getFile(evt){
+  var files = evt.target.files;
+  var file = files[0];
+  custom_model = document.getElementById("custom_model").value;
+
+  if (file!=""){
+    if (custom_model.length<4){
+      warning = "Please upload file with correct name";
+      alert(warning);
+      document.getElementById("custom_model").value="";   
+    } else if (custom_model.slice(-3,)!=".py") {
+      warning = "Please upload python file";
+      alert(warning);
+      document.getElementById("custom_model").value="";
+    }
+  }
+}
+
+function checkConstraint() {
+    var max, min, warning, model, custom_model;
+    max = document.getElementById("constraint_max").value;
+    min = document.getElementById("constraint_min").value;
+    model = document.getElementById("model").value;
+    custom_model = document.getElementById("custom_model").value;
+
+    if (max== "" || min== ""){
+        warning = "Please set constraints";
+        //document.getElementById("warn").innerHTML = warning;
+        alert(warning);
+        // location.reload();
+        return false;
+    } else if (max<=min) {
+        warning = "Minimal constraint must be smaller than Maximal constraint";
+        //document.getElementById("warn").innerHTML = warning;
+        alert(warning);
+        // location.reload();
+        return false;    
+    } 
+
+    if (model== "-select here -" && custom_model== ""){
+        warning = "Please select/upload a model";
+        //document.getElementById("warn").innerHTML = warning;
+        alert(warning);
+        // location.reload();
+        return false;    
+    }
+    return true; 
+}
+
+$(document).ready(function () {
+    $('#add').on('click', function (event) {
+        var html = `
+    <div class="form-group row">
+        <label for="name" class="col-md-1 control-label">name: </label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="name">
+        </div>
+        <label for="min" class="col-md-1 control-label">From:</label>
+        <div class="col-md-2">
+            <input type="number" class="form-control" id="min">
+        </div>
+        <label for="max" class="col-md-1 control-label">To:</label>
+        <div class="col-md-2">
+            <input type="number" class="form-control" id="max">
+        </div>
+    </div> `;
+        $("#parent-div").prepend(html);
+    });
+});
+
+function showSelect() {
+  document.getElementById('nav_list').innerHTML = '<li><a href="index_std">Standard Models</a></li><li><a href="index_cus">Customized Models</a></li>';
+}
+
+function loadData(){
+  document.getElementById('loaddata').innerHTML = '<div class="loader"></div>';
+  $(".loader").delay(4000).fadeOut();
+}
+
+</script>
+
+<style>
+#logo {
+  background-image: url("/static/img/logo.png");
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+}
+
+.loader {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  opacity: 0.8;
+  background: url('/static/img/load.gif') 50% 50% no-repeat rgb(249,249,249);
+}
+</style>
+
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#" onclick="showSelect()">Pipeline Automation</a>
+    </div>
+    <ul class="nav navbar-nav" id="nav_list">
+<!--       <li><a href="index_std">Standard Models</a></li>
+      <li><a href="index_cus">Customized Models</a></li> -->
+    </ul>
+  </div>
+</nav>
+
+<div class="jumbotron text-center" id="logo">
+  <h2>Optimised ML Pipeline Automation</h2>
+  <p>Upload and optimize your own models and hyperparameters</p> 
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+
+    <div class="col-sm-6">
+      <form class="form-horizontal" action="response_cus" method="POST" 
+            enctype="multipart/form-data" onsubmit="return checkConstraint()">
+
+        <div class="form-group">
+          <label for="type">Learn Type</label>
+          <select class="form-control" id="type" name="type" onchange="checkLearnType()">
+            <option>- select here -</option>
+            <option>Supervised</option>
+            <option>Unsupervised</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="custom_model">Upload self-defined Model</label>
+          <input type="file" class="form-control-file" id="custom_model" name="custom_model" onchange='getFile(event)'>
+        </div>
+
+        <div class="form-group">        
+          <button type="button" id="add" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add Constraints</button>
+        </div>
+
+        <div id="parent-div"></div>
+        
+        <div id="loaddata"></div>
+
+        <div class="form-group">        
+          <div class="col-sm-offset-8 col-sm-4">
+            <button type="submit" id="submit" class="btn btn-info" onclick="loadData()">Optimize</button>
+            <button type="reset" class="btn">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-sm-3">
+    </div>
+    
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+learn_type,algo_type,model,num_hp,eval_type,iteration,eval_score,hp1,hp2
+Reinforcement Learning,Gaussian,Bandit,1,Score,2,1.6,0.077,
+Reinforcement Learning,Gaussian,Bandit,1,Score,3,3.4,1.001,
+Reinforcement Learning,Gaussian,Bandit,1,Score,4,1.7,0.001,
+Reinforcement Learning,Gaussian,Bandit,1,Score,3,0.7,0.098,
+Reinforcement Learning,Gaussian,Bandit,1,Score,4,4.6,0.001,
+Reinforcement Learning,Gaussian,Bandit,1,Score,5,2.8,1.001,
+Reinforcement Learning,Gaussian,Bandit,1,Score,4,-0.6,0.049,
+Reinforcement Learning,Gaussian,Bandit,1,Score,5,6.9,1.001,
+Reinforcement Learning,Gaussian,Bandit,1,Score,6,2.8,0.001,
