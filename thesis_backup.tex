@@ -1,0 +1,75 @@
+\subsection{General Equations}
+
+\begin{figure}[h]
+\begin{equation}
+    x^* = \operatornamewithlimits{argmin}\limits_{x \in \chi} f(x)
+\end{equation}
+\caption{Black-Box Optimisation Aim}
+\end{figure}
+
+\subsection{Sequential Model Based Optimisation}
+
+%BO
+\subsubsection{Bayesian Optimisation}
+where:
+\begin{description}
+\item[$\chi$] is some input space
+\item[$f:\chi \rightarrow \Re$] is some scalar set of functions
+\item[$C:\chi \times \chi \rightarrow \Re$] is some covariance function
+\item[$m:\chi \rightarrow \Re$] is some mean function 
+\end{description}
+
+\begin{figure}[h]
+\begin{equation}
+    \gamma(x) = \frac{f(x_\textrm{best}) - \mu(x)}{\sigma(x)}
+\end{equation}
+\caption{Gaussian Process Posterior}
+\end{figure}
+
+\begin{figure}[h]
+\begin{equation}
+    \alpha_\textrm{EI(x)}=\sigma(x)(\gamma(x)\Phi(\gamma(x)) + N(\gamma(x); 0,1)
+\end{equation}
+\caption{Bayesian Optimisation Expected Improvement}
+\end{figure}
+
+%TPE
+\subsubsection{Tree-Structured Parzen Estimators}
+\begin{figure}[h]
+\begin{equation}
+    EI(x) = \frac{l(x)}{g(x)}
+\end{equation}
+\caption{Tree-Structured Parzen Estimators}
+\end{figure}
+
+%PSO
+\subsection{Particle Swarm Optimisation}
+where:
+\begin{description}
+\item[v] indicates particle velocity
+\item[x] indicates particle position
+\item[c] indicates acceleration constant
+\end{description}
+
+\begin{figure}[h]
+\begin{equation}
+    v_i^\textrm{(k+1)} = \omega \times v_i^k + c_1 \times \textrm{rand}_1 \times (\textrm{pbest}_i -x_1^k) + c_2 \times \textrm{rand}_2 \times (\textrm{gbest} - x_i^k)
+\end{equation}
+\caption{Defining behaviours of particles in swarm}
+\end{figure}
+
+\subsection{Genetic Programming}
+
+\begin{figure}[h]
+\begin{equation}
+    \textrm{descendent} = [p, p_1, p_2, ..., p_n]
+\end{equation}
+\caption{Descendent feature}
+\end{figure}
+
+\begin{figure}[h]
+\begin{equation}
+    P(D) = \abs{ \frac{f(D)}{\sum_\textrm{i=1}^\textrm{N}}f(D_i) }
+\end{equation}
+\caption{Fitness evaluation of descendant}
+\end{figure}
